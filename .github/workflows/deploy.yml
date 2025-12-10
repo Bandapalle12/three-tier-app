@@ -1,62 +1,70 @@
-name: Terraform
+name: Deploy Terraform to AWS
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
+    branches: ["main"]
   workflow_dispatch:
     inputs:
       destroy:
-        description: "Set to true to destroy the infrastructure"
-        required: true
-        default: false
-        type: boolean
+        description: "Destroy infrastructure?"
+        required: false
+        default: "false"
 
 jobs:
-  terraform:
+  deploy:
     runs-on: ubuntu-latest
-
-    env:
-      AWS_REGION: us-east-1   # change if needed
+    environment: production
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/hello-world:latest ./app
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/hello-world:latest
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.8   # or your TF version
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+        uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
+        working-directory: project
         run: terraform init
+        env:
+              AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              AWS_DEFAULT_REGION: us-east-1
 
-      - name: Terraform Validate
-        run: terraform validate
-
-      # -------- PLAN FOR NORMAL APPLY (default) ----------
-      - name: Terraform Plan (apply mode)
-        if: github.event_name != 'workflow_dispatch' || inputs.destroy != true
+      - name: Terraform Plan
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        working-directory: project
         run: terraform plan -out=tfplan
+        env:
+          TF_VAR_docker_image: ${{ secrets.DOCKERHUB_USERNAME }}/hello-world:latest
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      # -------- APPLY (only for non-destroy runs on main) ----------
       - name: Terraform Apply
-        if: (github.event_name != 'workflow_dispatch' || inputs.destroy != true) && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        working-directory: project
         run: terraform apply -auto-approve tfplan
+        env:
+          TF_VAR_docker_image: ${{ secrets.DOCKERHUB_USERNAME }}/hello-world:latest
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      # -------- PLAN FOR DESTROY (only when manually triggered with destroy=true) ----------
-      - name: Terraform Plan (destroy mode)
-        if: github.event_name == 'workflow_dispatch' && inputs.destroy == true
-        run: terraform plan -destroy -out=tfplan-destroy
-
-      # -------- DESTROY ----------
       - name: Terraform Destroy
-        if: github.event_name == 'workflow_dispatch' && inputs.destroy == true
-        run: terraform apply -auto-approve tfplan-destroy
+        if: ${{ github.event.inputs.destroy == 'true' }}
+        working-directory: project
+        run: terraform destroy -auto-approve
+        env:
+          TF_VAR_docker_image: ${{ secrets.DOCKERHUB_USERNAME }}/hello-world:latest
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
