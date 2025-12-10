@@ -5,7 +5,7 @@ variable "project_name" {
 }
 
 variable "public_subnets" {
-  description = "List of public subnets"
+  description = "List of public subnets new"
   type        = list(string)
   default     = [] # fill using data sources for default VPC
 }
