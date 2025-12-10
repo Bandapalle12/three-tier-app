@@ -9,6 +9,11 @@ variable "public_subnets" {
   type        = list(string)
   default     = [] # fill using data sources for default VPC
 }
+variable "key_name" {
+  description = "EC2 key pair name to use for SSH"
+  type        = string
+  default     = "TestKey"
+}
 
 variable "vpc_id" {
   description = "VPC ID where EC2 instances will be launched"

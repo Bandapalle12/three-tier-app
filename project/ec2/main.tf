@@ -13,7 +13,7 @@ resource "aws_instance" "ecs_instance" {
   ami           = data.aws_ami.ecs.id
   instance_type = var.instance_type
   subnet_id     = var.public_subnets[0]
-  key_name                    = var.key_name
+  key_name      = var.key_name
   
   associate_public_ip_address = true
 
