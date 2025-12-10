@@ -13,6 +13,7 @@ resource "aws_instance" "ecs_instance" {
   ami           = data.aws_ami.ecs.id
   instance_type = var.instance_type
   subnet_id     = var.public_subnets[0]
+  key_name                    = var.key_name
   
   associate_public_ip_address = true
 
@@ -30,7 +31,7 @@ resource "aws_instance" "ecs_instance" {
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
-  name = "${var.project_name}-ecs-instance-role3"
+  name = "${var.project_name}-ecs-instance-role4"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -55,7 +56,7 @@ resource "aws_iam_role_policy_attachment" "ecs_ec2_ecr_policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = "${var.project_name}-ecs-instance-profile3"
+  name = "${var.project_name}-ecs-instance-profile4"
   role = aws_iam_role.ecs_instance_role.name
 }
 
