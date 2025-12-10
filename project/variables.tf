@@ -17,6 +17,14 @@ variable "vpc_id" {
   default     = "" # provide your VPC manually OR data source
 }
 
+variable "key_name" {
+  description = "EC2 key pair name to use"
+  type        = string
+  default     = "TestKey"  # or set via tfvars
+}
+
+
+
 variable "public_subnets" {
   description = "List of public subnets"
   type        = list(string)
@@ -44,7 +52,7 @@ variable "desired_capacity" {
 variable "docker_image" {
   description = "Docker image for ECS service"
   type        = string
-  default     = "your-dockerhub-user/hello-world:latest"
+  default     = "bandapalle12/hello-world:latest"
 }
 
 variable "app_port" {

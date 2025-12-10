@@ -1,5 +1,6 @@
 # Install the latest version
 flask
+pymysql
 
 # Install a specific version
 requests==2.31.0

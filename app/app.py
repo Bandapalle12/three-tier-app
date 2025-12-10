@@ -5,8 +5,8 @@ import os
 app = Flask(__name__)
 
 RDS_HOST = os.getenv("RDS_HOST")
-rds_username = os.getenv("rds_username")
-rds_password = os.getenv("rds_password")
+rds_username = os.getenv("username")
+rds_password = os.getenv("password")
 RDS_DB = "testdb"
 
 @app.route("/")
@@ -14,7 +14,7 @@ def hello():
     try:
         conn = pymysql.connect(
             host=RDS_HOST,
-            username=rds_username,
+            user=rds_username,
             password=rds_password,
             database=RDS_DB
         )

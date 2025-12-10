@@ -7,7 +7,7 @@ variable "project_name" {
 variable "docker_image" {
   description = "Docker image for ECS service"
   type        = string
-  default     = "your-dockerhub-user/hello-world:latest"
+  default     = "bandapalle12/hello-world:latest"
 }
 
 variable "app_port" {
