@@ -13,6 +13,6 @@ data "aws_iam_policy_document" "hello_world_trust" {
 
 resource "aws_iam_role" "hello_world_role" {
   name               = "hello-world-test-role"
-  description        = "Test role to verify Terraform S3 remote state"
+  description        = "New Test role to verify Terraform S3 remote state"
   assume_role_policy = data.aws_iam_policy_document.hello_world_trust.json
 }
