@@ -11,5 +11,6 @@ resource "aws_db_instance" "mysql" {
   username            = var.rds_username
   password            = var.rds_password
   skip_final_snapshot = true
+  db_name             = "testdb"
 }
 
