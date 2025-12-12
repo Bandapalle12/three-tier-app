@@ -74,6 +74,33 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         run: terraform init -input=false
 
+      - name: Ensure CloudWatch log group is imported into TF state (if needed)
+        working-directory: project
+        env:
+          LOG_GROUP_NAME: "/ecs/three-tier-demo"
+          TF_RESOURCE_ADDR: "module.ecs.aws_cloudwatch_log_group.ecs"
+        run: |
+          set -euo pipefail
+
+          echo "Checking if CloudWatch log group ${LOG_GROUP_NAME} exists in AWS..."
+          exists=$(aws logs describe-log-groups --log-group-name-prefix "${LOG_GROUP_NAME}" \
+            --query "logGroups[?logGroupName=='${LOG_GROUP_NAME}'] | length(@)" --output text)
+
+          if [ "${exists}" = "1" ]; then
+            echo "Log group ${LOG_GROUP_NAME} exists in AWS."
+
+            # Check if resource is already tracked in terraform state
+            if terraform state list | grep -qE "^${TF_RESOURCE_ADDR//./\\.}\$"; then
+              echo "Terraform state already has ${TF_RESOURCE_ADDR}; skipping import."
+            else
+              echo "Terraform state does not contain ${TF_RESOURCE_ADDR}. Importing..."
+              terraform import -input=false "${TF_RESOURCE_ADDR}" "${LOG_GROUP_NAME}"
+              echo "Import completed."
+            fi
+          else
+            echo "Log group ${LOG_GROUP_NAME} does NOT exist in AWS. Terraform will create it (if configured)."
+          fi
+
       - name: Terraform Plan
         if: ${{ github.event.inputs.destroy != 'true' }}
         working-directory: project
