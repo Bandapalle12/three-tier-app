@@ -65,3 +65,4 @@ module "route53" {
   # Pass the public IP from EC2 module output
   ec2_public_ip = module.ec2.public_ip
 }
+
