@@ -22,12 +22,6 @@ name = var.rds_secret_name
 }
 
 
-resource "aws_cloudwatch_log_group" "ecs" {
-name = "/ecs/${var.project_name}"
-retention_in_days = 7
-}
-
-
 resource "aws_ecs_task_definition" "hello_task" {
 family = "${var.project_name}-task"
 requires_compatibilities = ["EC2"]

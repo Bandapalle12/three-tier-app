@@ -30,18 +30,6 @@ name = "demo"
 }
 
 
-data "aws_secretsmanager_secret_version" "rds_existing_version" {
-secret_id = data.aws_secretsmanager_secret.rds_existing.id
-}
-
-
-locals {
-rds_secret = jsondecode(data.aws_secretsmanager_secret_version.rds_existing_version.secret_string)
-rds_secret_username = local.rds_secret.username
-rds_secret_password = local.rds_secret.password
-}
-
-
 # Use the secret values when creating the DB
 resource "aws_db_instance" "mysql" {
 identifier = "${var.project_name}-db"
