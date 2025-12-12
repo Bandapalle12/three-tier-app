@@ -74,6 +74,35 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         run: terraform init -input=false
 
+      - name: Ensure RDS instance is imported into TF state (if exists)
+        working-directory: project
+        env:
+          DB_IDENTIFIER: "three-tier-demo-db"
+          TF_RESOURCE_ADDR: "module.rds.aws_db_instance.mysql"
+        run: |
+          set -euo pipefail
+
+          echo "Checking if RDS instance ${DB_IDENTIFIER} exists in AWS…"
+          exists=$(aws rds describe-db-instances \
+            --db-instance-identifier "${DB_IDENTIFIER}" \
+            --query "DBInstances | length(@)" \
+            --output text || echo "0")
+
+          if [ "${exists}" = "1" ]; then
+            echo "RDS instance ${DB_IDENTIFIER} exists in AWS."
+
+            if terraform state list | grep -qE "^${TF_RESOURCE_ADDR//./\\.}\$"; then
+              echo "Terraform already tracks ${TF_RESOURCE_ADDR}; skipping import."
+            else
+              echo "Importing RDS instance into Terraform state…"
+              terraform import -input=false "${TF_RESOURCE_ADDR}" "${DB_IDENTIFIER}"
+              echo "Import completed."
+            fi
+          else
+            echo "RDS does NOT exist. Terraform will create it."
+          fi
+
+
       - name: Ensure CloudWatch log group is imported into TF state (if needed)
         working-directory: project
         env:

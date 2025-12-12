@@ -137,3 +137,21 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "EC2"
   # You can add deployment_controller or load_balancer config later if needed
 }
+resource "aws_iam_role_policy" "ecs_task_exec_secrets" {
+  name = "${var.project_name}-ecs-task-exec-secrets"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = data.aws_secretsmanager_secret.rds.arn
+      }
+    ]
+  })
+}
