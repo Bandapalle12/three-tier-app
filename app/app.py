@@ -1,16 +1,22 @@
 from flask import Flask
 import pymysql
-import os
 import json
+import os
 
-secret_json = os.getenv("RDS_SECRET")
-if secret_json:
-    creds = json.loads(secret_json)
-    rds_username = creds["username"]
-    rds_password = creds["password"]
+raw_secret = os.getenv("RDS_SECRET")
+
+if raw_secret:
+    cleaned = raw_secret.strip().replace("\\", "")
+    if cleaned.startswith('"') and cleaned.endswith('"'):
+        cleaned = cleaned[1:-1]
+
+    creds = json.loads(cleaned)
+    rds_username = creds.get("username")
+    rds_password = creds.get("password")
 else:
-    rds_username = os.getenv("username")
-    rds_password = os.getenv("password")
+    rds_username = None
+    rds_password = None
+
 
 app = Flask(__name__)
 

@@ -107,10 +107,10 @@ resource "aws_ecs_task_definition" "hello_task" {
     }]
 
     # Inject secrets from Secrets Manager into container env vars
-    secrets = [
+  secrets = [
   {
     name      = "RDS_SECRET"
-    valueFrom = data.aws_secretsmanager_secret.rds.arn
+    valueFrom = "${data.aws_secretsmanager_secret.rds.arn}"
   }
 ]
 
