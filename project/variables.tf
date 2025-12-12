@@ -52,7 +52,7 @@ variable "desired_capacity" {
 variable "docker_image" {
   description = "Docker image for ECS service"
   type        = string
-  default     = "bandapalle12/hello-world:latest"
+  default     = "487527603832.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest"
 }
 
 variable "app_port" {

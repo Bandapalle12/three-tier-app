@@ -35,6 +35,14 @@ resource "aws_ecs_task_definition" "hello_task" {
       containerPort = var.app_port
       hostPort      = var.app_port
     }]
+    logConfiguration = {
+    logDriver = "awslogs"
+    options = {
+      "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+      "awslogs-region"        = var.aws_region
+      "awslogs-stream-prefix" = var.project_name
+    }
+  }
   }])
 }
 
@@ -47,4 +55,8 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "EC2"
 }
 
+resource "aws_cloudwatch_log_group" "ecs" {
+  name              = "/ecs/${var.project_name}"
+  retention_in_days = 7   # change if you want different retention
+}
 

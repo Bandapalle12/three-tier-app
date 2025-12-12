@@ -31,7 +31,7 @@ resource "aws_instance" "ecs_instance" {
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
-  name = "${var.project_name}-ecs-instance-role8"
+  name = "${var.project_name}-ecs-instance-role9"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -56,7 +56,27 @@ resource "aws_iam_role_policy_attachment" "ecs_ec2_ecr_policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = "${var.project_name}-ecs-instance-profile8"
+  name = "${var.project_name}-ecs-instance-profile9"
   role = aws_iam_role.ecs_instance_role.name
 }
 
+# allow ECS host to write logs
+resource "aws_iam_role_policy" "ecs_instance_logs_policy" {
+  name = "${var.project_name}-ecs-logs-policy"
+  role = aws_iam_role.ecs_instance_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams"
+        ],
+        Resource = "*"   # narrow this if you want (see note)
+      }
+    ]
+  })
+}

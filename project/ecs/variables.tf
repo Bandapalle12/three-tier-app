@@ -7,7 +7,7 @@ variable "project_name" {
 variable "docker_image" {
   description = "Docker image for ECS service"
   type        = string
-  default     = "bandapalle12/hello-world:latest"
+  default     = "487527603832.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest"
 }
 
 variable "app_port" {
@@ -27,4 +27,10 @@ variable "rds_password" {
 
 variable "rds_host" {
   type = string
+}
+
+variable "aws_region" {
+  description = "AWS region for all resources"
+  type        = string
+  default     = "us-east-1"
 }

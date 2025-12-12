@@ -35,6 +35,7 @@ module "ecs" {
   project_name    = var.project_name
   docker_image    = var.docker_image
   app_port        = var.app_port
+  aws_region      = var.aws_region
 
   rds_username = var.rds_username
   rds_password = var.rds_password
