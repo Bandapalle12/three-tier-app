@@ -6,16 +6,17 @@ import os
 raw_secret = os.getenv("RDS_SECRET")
 
 if raw_secret:
-    cleaned = raw_secret.strip().replace("\\", "")
-    if cleaned.startswith('"') and cleaned.endswith('"'):
-        cleaned = cleaned[1:-1]
+    # FIX: remove CRLF and trim whitespace
+    cleaned = raw_secret.strip().replace("\r", "").replace("\n", "")
 
+    # Load JSON safely
     creds = json.loads(cleaned)
-    rds_username = creds.get("username")
-    rds_password = creds.get("password")
+    rds_username = creds["username"]
+    rds_password = creds["password"]
 else:
     rds_username = None
     rds_password = None
+
 
 
 app = Flask(__name__)
