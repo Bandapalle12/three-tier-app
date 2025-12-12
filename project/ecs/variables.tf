@@ -33,4 +33,15 @@ variable "aws_region" {
   description = "AWS region for all resources"
   type        = string
   default     = "us-east-1"
+} 
+
+variable "rds_secret_arn" {
+  description = "ARN of Secrets Manager secret with RDS credentials"
+  type        = string
+  default     = ""
+}
+variable "rds_secret_name" {
+description = "Name (or ARN) of existing Secrets Manager secret for RDS credentials"
+type = string
+default = ""
 }

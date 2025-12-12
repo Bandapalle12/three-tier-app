@@ -40,7 +40,7 @@ module "ecs" {
   rds_username = var.rds_username
   rds_password = var.rds_password
   rds_host = module.rds.db_endpoint
-
+  rds_secret_name = "demo"
 
 }
 
