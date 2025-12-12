@@ -108,17 +108,12 @@ resource "aws_ecs_task_definition" "hello_task" {
 
     # Inject secrets from Secrets Manager into container env vars
     secrets = [
-      {
-        name      = "username"
-        valueFrom = "arn:aws:secretsmanager:us-east-1:487527603832:secret:demo-2BXU26:SecretString:username"
-      },
-      {
-        name      = "password"
-        valueFrom = "arn:aws:secretsmanager:us-east-1:487527603832:secret:demo-2BXU26:SecretString:password"
-      }
-      
+  {
+    name      = "RDS_SECRET"
+    valueFrom = data.aws_secretsmanager_secret.rds_existing.arn
+  }
+]
 
-    ]
 
     logConfiguration = {
       logDriver = "awslogs"

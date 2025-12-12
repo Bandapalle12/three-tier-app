@@ -1,6 +1,16 @@
 from flask import Flask
 import pymysql
 import os
+import json
+
+secret_json = os.getenv("RDS_SECRET")
+if secret_json:
+    creds = json.loads(secret_json)
+    rds_username = creds["username"]
+    rds_password = creds["password"]
+else:
+    rds_username = os.getenv("username")
+    rds_password = os.getenv("password")
 
 app = Flask(__name__)
 
