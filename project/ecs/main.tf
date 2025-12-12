@@ -110,7 +110,7 @@ resource "aws_ecs_task_definition" "hello_task" {
     secrets = [
   {
     name      = "RDS_SECRET"
-    valueFrom = data.aws_secretsmanager_secret.rds_existing.arn
+    valueFrom = data.aws_secretsmanager_secret.rds.arn
   }
 ]
 
