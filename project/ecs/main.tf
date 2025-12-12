@@ -110,12 +110,14 @@ resource "aws_ecs_task_definition" "hello_task" {
     secrets = [
       {
         name      = "username"
-        valueFrom = "${data.aws_secretsmanager_secret.rds.arn}:SecretString:username"
+        valueFrom = "arn:aws:secretsmanager:us-east-1:487527603832:secret:demo-2BXU26:SecretString:username"
       },
       {
         name      = "password"
-        valueFrom = "${data.aws_secretsmanager_secret.rds.arn}:SecretString:password"
+        valueFrom = "arn:aws:secretsmanager:us-east-1:487527603832:secret:demo-2BXU26:SecretString:password"
       }
+      
+
     ]
 
     logConfiguration = {
