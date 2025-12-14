@@ -1,4 +1,3 @@
-# rds/main.tf
 
 data "aws_rds_engine_version" "mysql" {
   engine = var.rds_engine

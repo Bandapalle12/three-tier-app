@@ -40,6 +40,7 @@ variable "rds_secret_arn" {
   type        = string
   default     = ""
 }
+
 variable "rds_secret_name" {
 description = "Name (or ARN) of existing Secrets Manager secret for RDS credentials"
 type = string

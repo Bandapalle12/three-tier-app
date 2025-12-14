@@ -14,33 +14,32 @@ variable "aws_region" {
 variable "vpc_id" {
   description = "Existing VPC ID (Free Tier recommended: default VPC)"
   type        = string
-  default     = "" # provide your VPC manually OR data source
+  default     = "" 
 }
 
 variable "key_name" {
   description = "EC2 key pair name to use"
   type        = string
-  default     = "TestKey"  # or set via tfvars
+  default     = "TestKey"  
 }
-
 
 
 variable "public_subnets" {
   description = "List of public subnets"
   type        = list(string)
-  default     = [] # fill using data sources for default VPC
+  default     = [] 
 }
 
 variable "instance_type" {
   description = "EC2 instance type for ECS cluster"
   type        = string
-  default     = "t2.micro" # free-tier eligible
+  default     = "t2.micro" 
 }
 
 variable "ecs_ami_id" {
   description = "ECS-optimized AMI ID"
   type        = string
-  default     = "" # filled automatically via data source
+  default     = "" 
 }
 
 variable "desired_capacity" {

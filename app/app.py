@@ -5,13 +5,9 @@ import os
 
 app = Flask(__name__)
 
-# ------------------------------------
-# LOAD SECRET FROM ECS (RDS_SECRET)
-# ------------------------------------
-raw_secret = os.getenv("RDS_SECRET")
+raw_secret = os.getenv("RDS_SECRET")        #load secert from ECS
 
 if raw_secret:
-    # Clean CRLF, whitespace
     cleaned = raw_secret.strip().replace("\r", "").replace("\n", "")
     creds = json.loads(cleaned)
 

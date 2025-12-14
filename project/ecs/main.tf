@@ -1,10 +1,4 @@
-###############################################################################
-# ecs/main.tf  - COMPLETE + FIXED
-###############################################################################
 
-# -------------------------
-# IAM: Task execution role
-# -------------------------
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.project_name}-ecs-task-exec-role"
 
@@ -43,31 +37,25 @@ resource "aws_iam_role_policy" "ecs_task_exec_secrets" {
   })
 }
 
-# -------------------------
 # CloudWatch Log Group
-# -------------------------
 resource "aws_cloudwatch_log_group" "ecs" {
   name              = "/ecs/${var.project_name}"
   retention_in_days = 7
 }
 
-# -------------------------
+
 # Secrets Manager reference
-# -------------------------
 data "aws_secretsmanager_secret" "rds" {
   name = var.rds_secret_name
 }
 
-# -------------------------
+
 # ECS Cluster
-# -------------------------
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.project_name}-cluster"
 }
 
-# -------------------------
 # ECS Task Definition
-# -------------------------
 resource "aws_ecs_task_definition" "hello_task" {
   family                   = "${var.project_name}-task"
   requires_compatibilities = ["EC2"]
@@ -98,9 +86,6 @@ resource "aws_ecs_task_definition" "hello_task" {
         }
       ]
 
-      # ---------------------------
-      # FIXED: secrets block was misplaced
-      # ---------------------------
       secrets = [
         {
           name      = "RDS_SECRET"
@@ -120,9 +105,8 @@ resource "aws_ecs_task_definition" "hello_task" {
   ])
 }
 
-# -------------------------
+
 # ECS Service
-# -------------------------
 resource "aws_ecs_service" "ecs_service" {
   name            = "${var.project_name}-service"
   cluster         = aws_ecs_cluster.ecs_cluster.id

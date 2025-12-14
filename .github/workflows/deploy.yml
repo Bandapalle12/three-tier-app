@@ -11,8 +11,8 @@ on:
         default: "false"
 
 env:
-  AWS_REGION: us-east-1         # change if needed
-  ECR_REPO_NAME: hello-world    # change repo name if you want
+  AWS_REGION: us-east-1         
+  ECR_REPO_NAME: hello-world    
 
 jobs:
   deploy:

@@ -25,7 +25,7 @@ module "ec2" {
 
   instance_type  = var.instance_type
   project_name   = var.project_name
-  vpc_id         = local.vpc_id        # <-- required by EC2 module
+  vpc_id         = local.vpc_id        
   public_subnets = local.public_subnets
 }
 
